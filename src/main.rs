@@ -19,12 +19,15 @@ fn main() {
 
     let items = query_table_outline(pool, db_schema);
     for item in items {
-        println!("\
-            TableOutline\n\
+        println!(
+            "TableOutline\n\
             table_name: {}\n\
             table_comment: {}\n\
-            table_fqn: {}
-            ", item.table_name, item.table_comment.unwrap(), item.table_fqn);
+            table_fqn: {}\n",
+            item.table_name,
+            item.table_comment.unwrap(),
+            item.table_fqn
+        );
     }
 }
 
