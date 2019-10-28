@@ -23,7 +23,7 @@ fn main() {
             TableOutline\n\
             table_name: {}\n\
             table_comment: {}\n\
-            table_fqn: {}\n
+            table_fqn: {}
             ", item.table_name, item.table_comment.unwrap(), item.table_fqn);
     }
 }
