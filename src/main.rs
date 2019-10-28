@@ -90,18 +90,19 @@ fn query_table_outline(
                 tbl.table_name
             "#, params!{
                 "param_schema_name" => param
-            }).map::<Vec<TableOutline>, _>(|result| {
-        result
-            .map(|x| x.unwrap())
-            .map(|row| {
-                let (table_name, table_comment, table_fqn) = mysql::from_row(row);
-                TableOutline {
-                    table_name,
-                    table_comment,
-                    table_fqn,
-                }
-            }).collect()
-    }).unwrap();
+            })
+        .map::<Vec<TableOutline>, _>(|result| {
+            result
+                .map(|x| x.unwrap())
+                .map(|row| {
+                    let (table_name, table_comment, table_fqn) = mysql::from_row(row);
+                    TableOutline {
+                        table_name,
+                        table_comment,
+                        table_fqn,
+                    }
+                }).collect()
+        }).unwrap();
 }
 
 #[derive(Debug, PartialEq, Eq)]
