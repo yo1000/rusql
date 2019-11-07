@@ -1,12 +1,22 @@
 #[macro_use]
 extern crate mysql;
-extern crate r2d2_mysql;
-extern crate r2d2;
+use mysql::{
+    Opts,
+    OptsBuilder,
+};
 
-use std::env;
-use std::sync::Arc;
-use mysql::{Opts, OptsBuilder};
-use r2d2_mysql::MysqlConnectionManager;
+extern crate r2d2;
+extern crate r2d2_mysql;
+use r2d2_mysql::{
+    MysqlConnectionManager,
+};
+
+use std::{
+    env,
+    str::FromStr,
+    sync::Arc,
+};
+
 
 const DATABASE_HOST: &str = "DATABASE_HOST";
 const DATABASE_PORT: &str = "DATABASE_PORT";
@@ -17,11 +27,11 @@ const DATABASE_NAME: &str = "DATABASE_NAME";
 const DATABASE_POOL_SIZE: u32 = 4;
 
 fn main() {
-    let db_host = env_var(DATABASE_HOST, Some("127.0.0.1".to_string()));
-    let db_port = env_var(DATABASE_PORT, Some("3306".to_string()));
-    let db_user = env_var(DATABASE_USER, None);
-    let db_pass = env_var(DATABASE_PASS, None);
-    let db_name = env_var(DATABASE_NAME, None);
+    let db_host = env_var::<String>(DATABASE_HOST, Some("127.0.0.1".to_string()));
+    let db_port = env_var::<String>(DATABASE_PORT, Some("3306".to_string()));
+    let db_user = env_var::<String>(DATABASE_USER, None);
+    let db_pass = env_var::<String>(DATABASE_PASS, None);
+    let db_name = env_var::<String>(DATABASE_NAME, None);
 
     assert_ne!(db_host, "");
     assert_ne!(db_port, "");
@@ -60,11 +70,17 @@ fn main() {
     }
 }
 
-fn env_var(name: &str, def_var: Option<String>) -> String {
-    let env_var = env::var(name);
-    return match def_var {
-        Some(v) => env_var.unwrap_or(v),
-        _ => env_var.expect(format!("{} must be set", name).as_str()),
+fn env_var<T>(name: &str, def_var: Option<T>) -> T where T: FromStr {
+    let var: Result<String, _> = env::var(name);
+    match var {
+        Ok(v) => {
+            let parsed = v.parse::<T>();
+            match parsed {
+                Ok(p) => p,
+                _ => def_var.expect(format!("{} must be set", name).as_str()),
+            }
+        },
+        _ => def_var.expect(format!("{} must be set", name).as_str()),
     }
 }
 
