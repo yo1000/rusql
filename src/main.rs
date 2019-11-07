@@ -27,14 +27,14 @@ const DATABASE_NAME: &str = "DATABASE_NAME";
 const DATABASE_POOL_SIZE: u32 = 4;
 
 fn main() {
-    let db_host = env_var::<String>(DATABASE_HOST, Some("127.0.0.1".to_string()));
-    let db_port = env_var::<String>(DATABASE_PORT, Some("3306".to_string()));
+    let db_host = env_var::<String>(DATABASE_HOST, Some(String::from("127.0.0.1")));
+    let db_port = env_var::<u32>(DATABASE_PORT, Some(3306));
     let db_user = env_var::<String>(DATABASE_USER, None);
     let db_pass = env_var::<String>(DATABASE_PASS, None);
     let db_name = env_var::<String>(DATABASE_NAME, None);
 
     assert_ne!(db_host, "");
-    assert_ne!(db_port, "");
+    assert!(db_port > 0);
     assert_ne!(db_user, "");
     assert_ne!(db_pass, "");
     assert_ne!(db_name, "");
